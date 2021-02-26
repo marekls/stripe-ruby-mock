@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 shared_examples 'Country Spec API' do
-  context 'retrieve country', live: true do
+  context 'retrieve country' do
     it 'retrieves a stripe country spec' do
       country = Stripe::CountrySpec.retrieve('US')
 

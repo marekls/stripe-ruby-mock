@@ -166,7 +166,7 @@ module StripeMock
       end
 
       def succeeded_payment_intent(payment_intent)
-        payment_intent[:status] = 'succeeded'
+        payment_intent[:status] = payment_intent[:capture_method] == 'manual' ? 'requires_capture' : 'succeeded'
         btxn = new_balance_transaction('txn', { source: payment_intent[:id] })
 
         payment_intent[:charges][:data] << Data.mock_charge(

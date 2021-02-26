@@ -10,7 +10,7 @@ shared_examples 'PaymentIntent API' do
     expect(payment_intent.currency).to eq('usd')
     expect(payment_intent.metadata.to_hash).to eq({})
     expect(payment_intent.status).to eq('succeeded')
-  end
+	end
 
   it "creates a requires_action stripe payment_intent when amount matches 3184" do
     payment_intent = Stripe::PaymentIntent.create(amount:  3184, currency: "usd")
@@ -78,7 +78,7 @@ shared_examples 'PaymentIntent API' do
       expect(e.param).to eq('payment_intent')
       expect(e.http_status).to eq(404)
     }
-  end
+	end
 
   it 'creates and confirms a stripe payment_intent with confirm flag to true' do
     payment_intent = Stripe::PaymentIntent.create(
@@ -96,6 +96,14 @@ shared_examples 'PaymentIntent API' do
     payment_intent = Stripe::PaymentIntent.create(amount: 100, currency: "usd")
     confirmed_payment_intent = payment_intent.confirm()
     expect(confirmed_payment_intent.status).to eq("succeeded")
+    expect(confirmed_payment_intent.charges.data.size).to eq(1)
+    expect(confirmed_payment_intent.charges.data.first.object).to eq('charge')
+	end
+
+  it "confirms a stripe payment_intent with manual capture" do
+    payment_intent = Stripe::PaymentIntent.create(amount: 100, currency: "usd", capture_method: "manual")
+    confirmed_payment_intent = payment_intent.confirm()
+    expect(confirmed_payment_intent.status).to eq("requires_capture")
     expect(confirmed_payment_intent.charges.data.size).to eq(1)
     expect(confirmed_payment_intent.charges.data.first.object).to eq('charge')
   end
@@ -126,7 +134,7 @@ shared_examples 'PaymentIntent API' do
     expect(updated.amount).to eq(200)
   end
 
-  it 'when amount is not integer', live: true do
+  it 'when amount is not integer' do
     expect { Stripe::PaymentIntent.create(amount: 400.2,
                                          currency: 'usd') }.to raise_error { |e|
       expect(e).to be_a Stripe::InvalidRequestError
@@ -135,7 +143,7 @@ shared_examples 'PaymentIntent API' do
     }
   end
 
-  it 'when amount is negative', live: true do
+  it 'when amount is negative' do
     expect { Stripe::PaymentIntent.create(amount: -400,
                                      currency: 'usd') }.to raise_error { |e|
       expect(e).to be_a Stripe::InvalidRequestError

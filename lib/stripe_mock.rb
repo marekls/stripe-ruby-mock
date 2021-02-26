@@ -2,6 +2,7 @@ require 'ostruct'
 require 'multi_json'
 require 'dante'
 require 'time'
+require 'active_support/core_ext/object/try'
 
 require 'stripe'
 

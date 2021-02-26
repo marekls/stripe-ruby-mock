@@ -103,7 +103,7 @@ shared_examples 'Transfer API' do
     }
   end
 
-  it "when amount is not integer", live: true do
+  it "when amount is not integer" do
     dest = Stripe::Account.create(type: "custom", email: "#{SecureRandom.uuid}@example.com", requested_capabilities: ['card_payments', 'platform_payments'])
     expect { Stripe::Transfer.create(amount: '400.2',
                                      currency: 'usd',
@@ -115,7 +115,7 @@ shared_examples 'Transfer API' do
     }
   end
 
-  it "when amount is negative", live: true do
+  it "when amount is negative" do
     dest = Stripe::Account.create(type: "custom", email: "#{SecureRandom.uuid}@example.com", requested_capabilities: ['card_payments', 'platform_payments'])
     expect { Stripe::Transfer.create(amount: '-400',
                                      currency: 'usd',

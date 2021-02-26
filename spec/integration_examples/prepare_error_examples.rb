@@ -16,7 +16,7 @@ shared_examples 'Card Error Prep' do
   #   }.to raise_error Stripe::CardError
   # end
 
-  it 'is a valid card error', live: true do
+  it 'is a valid card error' do
     stripe_helper.prepare_card_error
 
     begin

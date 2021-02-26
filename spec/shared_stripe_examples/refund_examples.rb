@@ -106,7 +106,7 @@ shared_examples 'Refund API' do
       expect(charge.amount_refunded).to eq 700
     end
 
-    it 'returns Stripe::Refund object', live: true do
+    it 'returns Stripe::Refund object' do
       charge = Stripe::Charge.create(
         amount: 999,
         currency: 'USD',
@@ -122,7 +122,7 @@ shared_examples 'Refund API' do
       expect(refund.amount).to eq(500)
     end
 
-    it 'refunds entire charge if amount is not set', live: true do
+    it 'refunds entire charge if amount is not set' do
       charge = Stripe::Charge.create(
         amount: 999,
         currency: 'USD',
@@ -296,7 +296,7 @@ shared_examples 'Refund API' do
       end
     end
 
-    it 'when use starting_after param', live: true do
+    it 'when use starting_after param' do
       customer = Stripe::Customer.create(
         description: 'Customer for test@example.com',
         source: {

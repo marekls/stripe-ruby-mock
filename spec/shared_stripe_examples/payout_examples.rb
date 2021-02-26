@@ -45,7 +45,7 @@ shared_examples 'Payout API' do
     }
   end
 
-  it 'when amount is not integer', live: true do
+  it 'when amount is not integer' do
     expect { Stripe::Payout.create(amount: '400.2',
                                        currency: 'usd',
                                        description: 'Payout for test@example.com') }.to raise_error { |e|
@@ -55,7 +55,7 @@ shared_examples 'Payout API' do
     }
   end
 
-  it 'when amount is negative', live: true do
+  it 'when amount is negative' do
     expect { Stripe::Payout.create(amount: '-400',
                                      currency: 'usd',
                                      description: 'Payout for test@example.com') }.to raise_error { |e|

@@ -14,7 +14,7 @@ shared_examples 'Customer Subscriptions with plans' do
   let(:free_plan) { stripe_helper.create_plan(id: 'free', product: product.id, amount: 0) }
 
   context "creating a new subscription" do
-    it "adds a new subscription to customer with none using items", live: true do
+    it "adds a new subscription to customer with none using items" do
       plan
       customer = Stripe::Customer.create(source: gen_card_tk)
 
@@ -49,7 +49,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(subscriptions.data.first.metadata.example).to eq( "yes" )
     end
 
-    it "adds a new subscription to customer with none", live: true do
+    it "adds a new subscription to customer with none" do
       plan
       customer = Stripe::Customer.create(source: gen_card_tk)
       subscriptions = Stripe::Subscription.list(customer: customer.id)
@@ -158,7 +158,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(subscriptions.count).to eq(1)
     end
 
-    it 'creates a charge for the customer', live: true do
+    it 'creates a charge for the customer' do
       customer = Stripe::Customer.create(source: gen_card_tk)
       Stripe::Subscription.create({ plan: plan.id, customer: customer.id, metadata: { foo: "bar", example: "yes" } })
       customer = Stripe::Customer.retrieve(customer.id)
@@ -168,7 +168,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(charges.data.first.amount).to eq(4999)
     end
 
-    it 'contains coupon object', live: true do
+    it 'contains coupon object' do
       coupon = stripe_helper.create_coupon(id: 'free_coupon', duration: 'repeating', duration_in_months: 3)
       customer = Stripe::Customer.create(source: gen_card_tk)
       Stripe::Subscription.create(plan: plan.id, customer: customer.id, coupon: coupon.id)
@@ -183,7 +183,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(subscriptions.data.first.discount.coupon.id).to eq(coupon.id)
     end
 
-    it 'when coupon is not exist', live: true do
+    it 'when coupon is not exist' do
       customer = Stripe::Customer.create(source: gen_card_tk)
 
       expect {
@@ -224,7 +224,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(subscription.pending_invoice_item_interval.interval_count).to eq 1
     end
 
-    it "correctly sets created when it's not provided as a parameter", live: true do
+    it "correctly sets created when it's not provided as a parameter" do
       customer = Stripe::Customer.create(source: gen_card_tk)
       subscription = Stripe::Subscription.create({ plan: plan.id, customer: customer.id })
 
@@ -319,7 +319,7 @@ shared_examples 'Customer Subscriptions with plans' do
       }
     end
 
-    it 'when attempting to create a new subscription with the params trial', live: true do
+    it 'when attempting to create a new subscription with the params trial' do
       plan = stripe_helper.create_plan(id: 'trial', product: product.id, amount: 999)
       customer = Stripe::Customer.create(source: gen_card_tk)
 
@@ -487,7 +487,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(sub.billing_cycle_anchor).to eq(billing_cycle_anchor)
     end
 
-    it 'when plan defined inside items', live: true do
+    it 'when plan defined inside items' do
       plan = stripe_helper.create_plan(id: 'BASE_PRICE_PLAN1', product: product.id)
 
       plan2 = stripe_helper.create_plan(id: 'PER_USER_PLAN1', product: product.id)
@@ -510,7 +510,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(subscription.items.data[1].quantity).to eq 2
     end
 
-    it 'when plan defined inside items for trials with no card', live: true do
+    it 'when plan defined inside items for trials with no card' do
       plan = stripe_helper.create_plan(id: 'BASE_PRICE_PLAN1', product: product.id)
 
       plan2 = stripe_helper.create_plan(id: 'PER_USER_PLAN1', product: product.id)
@@ -577,7 +577,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(sub1).to eq(sub2)
     end
 
-    it "adds a new subscription to customer with different idempotency key", live: true do
+    it "adds a new subscription to customer with different idempotency key" do
       product = stripe_helper.create_product(name: 'Silver Product')
       plan = stripe_helper.create_plan(id: 'silver', product: product.id,
                                        amount: 4999, currency: 'usd')
@@ -818,7 +818,7 @@ shared_examples 'Customer Subscriptions with plans' do
       expect(subscriptions.data.first.default_payment_method).to eq(payment_method_sepa.id)
     end
 
-    it 'when adds coupon', live: true do
+    it 'when adds coupon' do
       coupon = stripe_helper.create_coupon
       customer = Stripe::Customer.create(source: gen_card_tk, plan: plan.id)
       subscription = Stripe::Subscription.retrieve(customer.subscriptions.data.first.id)
@@ -886,7 +886,7 @@ shared_examples 'Customer Subscriptions with plans' do
     end
 
     [nil, 0].each do |trial_period_days|
-      it "raises an error when updating a customer with no card, and plan trial_period_days = #{trial_period_days}", live: true do
+      it "raises an error when updating a customer with no card, and plan trial_period_days = #{trial_period_days}" do
         begin
           free_plan
           paid_plan = stripe_helper.create_plan(id: 'enterprise', product: product.id, amount: 499, trial_period_days: trial_period_days)
@@ -906,7 +906,7 @@ shared_examples 'Customer Subscriptions with plans' do
       end
     end
 
-    it 'updates a subscription if the customer has a free trial', live: true do
+    it 'updates a subscription if the customer has a free trial' do
       trial_end = Time.now.utc.to_i + 3600
       customer = Stripe::Customer.create(plan: plan.id, trial_end: trial_end)
       subscription = customer.subscriptions.first
@@ -1035,7 +1035,7 @@ shared_examples 'Customer Subscriptions with plans' do
   context "cancelling a subscription" do
     let(:customer) { Stripe::Customer.create(id: 'test_customer_sub', source: gen_card_tk, plan: plan.id) }
 
-    it "cancels a stripe customer's subscription", live: true do
+    it "cancels a stripe customer's subscription" do
       customer = Stripe::Customer.create(source: gen_card_tk, plan: plan.id)
 
       sub = Stripe::Subscription.retrieve(customer.subscriptions.data.first.id)
@@ -1115,7 +1115,7 @@ shared_examples 'Customer Subscriptions with plans' do
     expect(customer.subscriptions.data.first.status).to eq('trialing')
   end
 
-  it "doesn't require a card when trial_end is present", live: true do
+  it "doesn't require a card when trial_end is present" do
     plan = stripe_helper.create_plan(
       :amount => 2000,
       :product => product.id,
@@ -1186,7 +1186,7 @@ shared_examples 'Customer Subscriptions with plans' do
 
   describe "metadata" do
 
-    it "creates a stripe customer and subscribes them to a plan with meta data", live: true do
+    it "creates a stripe customer and subscribes them to a plan with meta data" do
 
       stripe_helper.
         create_plan(
@@ -1223,7 +1223,7 @@ shared_examples 'Customer Subscriptions with prices' do
   let(:price) { stripe_helper.create_price(product: product.id, amount: 4999, currency: 'usd') }
 
   context "creating a new subscription" do
-    it "adds a new subscription to customer with none using items", live: true do
+    it "adds a new subscription to customer with none using items" do
       customer = Stripe::Customer.create(source: gen_card_tk)
 
       expect(customer.subscriptions.data).to be_empty

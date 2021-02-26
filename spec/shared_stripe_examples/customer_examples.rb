@@ -73,7 +73,7 @@ shared_examples 'Customer API' do
     expect(customer.default_source).to be_nil
   end
 
-  it 'creates a stripe customer with a dictionary of card values', live: true do
+  it 'creates a stripe customer with a dictionary of card values' do
     customer = Stripe::Customer.create(source: {
                                            object: 'card',
                                            number: '4242424242424242',
@@ -132,7 +132,24 @@ shared_examples 'Customer API' do
     expect(customer.subscriptions).to_not be_nil
     expect(customer.subscriptions.first.plan.id).to eq('silver')
     expect(customer.subscriptions.first.customer).to eq(customer.id)
-  end
+	end
+
+  context "copy customer to connected account" do
+		it "is success" do
+      customer = Stripe::Customer.create(source: gen_card_tk)
+			account = Stripe::Account.create
+      token_to_replicate_customer = Stripe::Token.create(
+        { customer: customer.id },
+        { stripe_account: account.id }
+      )
+			copied_customer = Stripe::Customer.create(
+        { source: token_to_replicate_customer.id },
+				{ stripe_account: account.id }
+      )
+      expect(copied_customer.sources.first.last4).to eq(customer.sources.first.last4)
+      expect(copied_customer.sources.first.fingerprint).to eq(customer.sources.first.fingerprint)
+		end
+	end
 
   context "create customer" do
     it "with a trial when trial_end is set" do
@@ -166,7 +183,7 @@ shared_examples 'Customer API' do
       expect(customer.subscriptions.first.trial_end).to eq(trial_end)
     end
 
-    it 'creates a customer when trial_end is set and no source', live: true do
+    it 'creates a customer when trial_end is set and no source' do
       plan = stripe_helper.create_plan(id: 'silver', product: product.id, amount: 999)
       trial_end = Time.now.utc.to_i + 3600
       customer = Stripe::Customer.create(plan: 'silver', trial_end: trial_end)
@@ -246,11 +263,11 @@ shared_examples 'Customer API' do
     expect(customer.discount.start).to be_within(1).of Time.now.to_i
   end
 
-  describe 'repeating coupon with duration limit', live: true do
+  describe 'repeating coupon with duration limit' do
     let!(:coupon) { stripe_helper.create_coupon(id: '10OFF', amount_off: 1000, currency: 'usd', duration: 'repeating', duration_in_months: 12) }
     let!(:customer) { Stripe::Customer.create(coupon: coupon.id) }
 
-    it 'creates the discount with the end date', live: true do
+    it 'creates the discount with the end date' do
       discount = Stripe::Customer.retrieve(customer.id).discount
       expect(discount).to_not be_nil
       expect(discount.coupon).to_not be_nil

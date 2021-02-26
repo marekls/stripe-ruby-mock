@@ -8,6 +8,7 @@ end
 group :test do
   gem 'rake'
   gem 'dotenv'
+  gem 'fuubar'
 end
 
 gemspec

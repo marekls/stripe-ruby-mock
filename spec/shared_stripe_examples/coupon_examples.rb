@@ -4,7 +4,7 @@ shared_examples 'Coupon API' do
   context 'create coupon' do
     let(:coupon) { stripe_helper.create_coupon }
 
-    it 'creates a stripe coupon', live: true do
+    it 'creates a stripe coupon' do
       expect(coupon.id).to eq('10BUCKS')
       expect(coupon.amount_off).to eq(1000)
 
@@ -35,7 +35,7 @@ shared_examples 'Coupon API' do
     end
   end
 
-  context 'retrieve coupon', live: true do
+  context 'retrieve coupon' do
     let(:coupon1) { stripe_helper.create_coupon }
     let(:coupon2) { stripe_helper.create_coupon(id: '11BUCKS', amount_off: 3000) }
 
@@ -68,7 +68,7 @@ shared_examples 'Coupon API' do
     end
   end
 
-  context 'Delete coupon', live: true do
+  context 'Delete coupon' do
     it 'deletes a stripe coupon' do
       original = stripe_helper.create_coupon
       coupon = Stripe::Coupon.retrieve(original.id)

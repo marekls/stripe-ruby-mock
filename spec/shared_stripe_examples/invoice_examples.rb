@@ -158,7 +158,7 @@ shared_examples 'Invoice API' do
     end
 
     describe 'parameter validation' do
-      it 'fails without a subscription or subscription plan if subscription proration date is specified', live: true do
+      it 'fails without a subscription or subscription plan if subscription proration date is specified' do
         expect { Stripe::Invoice.upcoming(customer: customer.id, subscription_proration_date: Time.now.to_i) }.to raise_error do |e|
           expect(e).to be_a Stripe::InvalidRequestError
           expect(e.http_status).to eq 400
@@ -166,7 +166,7 @@ shared_examples 'Invoice API' do
         end
       end
 
-      it 'fails without a subscription if proration date is specified', live: true, with_subscription: true do
+      it 'fails without a subscription if proration date is specified', with_subscription: true do
         expect { Stripe::Invoice.upcoming(customer: customer.id, subscription_plan: plan.id, subscription_proration_date: Time.now.to_i) }.to raise_error do |e|
           expect(e).to be_a Stripe::InvalidRequestError
           expect(e.http_status).to eq 400
@@ -175,7 +175,7 @@ shared_examples 'Invoice API' do
       end
     end
 
-    it 'considers current subscription', live: true, with_subscription: true do
+    it 'considers current subscription', with_subscription: true do
       # When
       upcoming = Stripe::Invoice.upcoming(customer: customer.id)
 
@@ -192,7 +192,7 @@ shared_examples 'Invoice API' do
     end
 
     describe 'discounts' do
-      it 'considers a $ off discount', live: true, with_discount_amtoff: true, with_subscription: true do
+      it 'considers a $ off discount', with_discount_amtoff: true, with_subscription: true do
         # When
         upcoming = Stripe::Invoice.upcoming(customer: customer.id)
 
@@ -207,7 +207,7 @@ shared_examples 'Invoice API' do
         expect(upcoming.total).to eq upcoming.subtotal - 100_00
       end
 
-      it 'considers a % off discount', live: true, with_discount_pctoff: true, with_subscription: true do
+      it 'considers a % off discount', with_discount_pctoff: true, with_subscription: true do
         # When
         upcoming = Stripe::Invoice.upcoming(customer: customer.id)
 
@@ -225,7 +225,7 @@ shared_examples 'Invoice API' do
 
     describe 'proration' do
       shared_examples 'failing when proration date is outside of the subscription current period' do
-        it 'fails', live: true, skip: 'Stripe does not raise error anymore' do
+        it 'fails', skip: 'Stripe does not raise error anymore' do
           expect { Stripe::Invoice.upcoming(
               customer: customer.id,
               subscription: subscription.id,
@@ -254,7 +254,7 @@ shared_examples 'Invoice API' do
           let(:new_yearly_plan) { stripe_helper.create_plan(id: '100y', product: product.id, amount: 100_00, interval: 'year') }
           let(:plan) { stripe_helper.create_plan(id: '50m', product: product.id, amount: 50_00, interval: 'month') }
 
-          it 'prorates while maintaining billing interval', live: true do
+          it 'prorates while maintaining billing interval' do
             # Given
             proration_date = Time.now + 5 * 24 * 3600 # 5 days later
             new_quantity = 2
@@ -304,7 +304,7 @@ shared_examples 'Invoice API' do
             expect(upcoming.lines.data.last.quantity).to eq new_quantity
           end
 
-          it 'prorates while changing billing intervals', live: true do
+          it 'prorates while changing billing intervals' do
             # Given
             proration_date = Time.now + 5 * 24 * 3600 # 5 days later
             new_quantity = 2
@@ -350,7 +350,7 @@ shared_examples 'Invoice API' do
       end
 
       shared_examples 'no proration is done' do
-        it 'generates a preview without performing an actual proration', live: true do
+        it 'generates a preview without performing an actual proration' do
           expect(preview.subtotal).to eq 150_00
           # this is a future invoice (generted at the end of the current subscription cycle), rather than a proration invoice
           expect(preview.due_date).to be_nil

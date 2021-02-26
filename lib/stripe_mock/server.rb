@@ -5,7 +5,7 @@ module StripeMock
     def self.start_new(opts)
       puts "Starting StripeMock server on port #{opts[:port] || 4999}"
 
-      host = opts.fetch :host,'0.0.0.0'
+      host = opts.fetch :host, '0.0.0.0'
       port = opts.fetch :port, 4999
 
       DRb.start_service "druby://#{host}:#{port}", Server.new

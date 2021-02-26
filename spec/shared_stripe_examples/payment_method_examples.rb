@@ -37,7 +37,7 @@ shared_examples 'PaymentMethod API' do
   end
 
   # post /v1/payment_methods
-  describe 'Create a PaymentMethod', live: true do
+  describe 'Create a PaymentMethod' do
     let(:payment_method) do
       Stripe::PaymentMethod.create(
         type: type,
@@ -131,7 +131,7 @@ shared_examples 'PaymentMethod API' do
   end
 
   # get /v1/payment_methods/:id
-  describe 'Retrieve a PaymentMethod', live: true do
+  describe 'Retrieve a PaymentMethod' do
     context 'with credit card' do
       it 'retrieves a given payment method' do
         customer = Stripe::Customer.create
@@ -184,7 +184,7 @@ shared_examples 'PaymentMethod API' do
   end
 
   # get /v1/payment_methods
-  describe "List a Customer's PaymentMethods", live: true do
+  describe "List a Customer's PaymentMethods" do
     let(:customer1) { Stripe::Customer.create }
     let(:customer2) { Stripe::Customer.create }
 
@@ -265,7 +265,7 @@ shared_examples 'PaymentMethod API' do
   end
 
   # post /v1/payment_methods/:id/attach
-  describe 'Attach a PaymentMethod to a Customer', live: true do
+  describe 'Attach a PaymentMethod to a Customer' do
     let(:customer) { Stripe::Customer.create }
 
     context 'with credit card' do
@@ -321,7 +321,7 @@ shared_examples 'PaymentMethod API' do
   end
 
   # post /v1/payment_methods/:id/detach
-  describe 'Detach a PaymentMethod from a Customer', live: true do
+  describe 'Detach a PaymentMethod from a Customer' do
     let(:customer) { Stripe::Customer.create }
 
     context 'with credit card' do
@@ -365,7 +365,7 @@ shared_examples 'PaymentMethod API' do
   end
 
   # post /v1/payment_methods/:id
-  describe 'Update a PaymentMethod', live: true do
+  describe 'Update a PaymentMethod' do
     let(:customer) { Stripe::Customer.create }
 
     context 'with credit card' do

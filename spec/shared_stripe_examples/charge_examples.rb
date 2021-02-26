@@ -370,7 +370,7 @@ shared_examples 'Charge API' do
     end
   end
 
-  it 'when use starting_after param', live: true do
+  it 'when use starting_after param' do
     cus = Stripe::Customer.create(
         description: 'Customer for test@example.com',
         source: {
