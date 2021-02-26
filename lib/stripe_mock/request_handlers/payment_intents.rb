@@ -81,7 +81,7 @@ module StripeMock
         route =~ method_url
         payment_intent = assert_existence :payment_intent, $1, payment_intents[$1]
 
-        succeeded_payment_intent(payment_intent)
+        succeeded_payment_intent(payment_intent, skip_capture: payment_intent[:capture_method] == 'manual')
       end
 
       def cancel_payment_intent(route, method_url, params, headers)
@@ -165,8 +165,10 @@ module StripeMock
         }
       end
 
-      def succeeded_payment_intent(payment_intent)
+      def succeeded_payment_intent(payment_intent, skip_capture: false)
         payment_intent[:status] = payment_intent[:capture_method] == 'manual' ? 'requires_capture' : 'succeeded'
+        return payment_intent if skip_capture
+
         btxn = new_balance_transaction('txn', { source: payment_intent[:id] })
 
         payment_intent[:charges][:data] << Data.mock_charge(

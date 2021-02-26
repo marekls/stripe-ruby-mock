@@ -102,10 +102,9 @@ shared_examples 'PaymentIntent API' do
 
   it "confirms a stripe payment_intent with manual capture" do
     payment_intent = Stripe::PaymentIntent.create(amount: 100, currency: "usd", capture_method: "manual")
-    confirmed_payment_intent = payment_intent.confirm()
+    confirmed_payment_intent = payment_intent.confirm
     expect(confirmed_payment_intent.status).to eq("requires_capture")
-    expect(confirmed_payment_intent.charges.data.size).to eq(1)
-    expect(confirmed_payment_intent.charges.data.first.object).to eq('charge')
+    expect(confirmed_payment_intent.charges.data.size).to eq(0)
   end
 
   it "captures a stripe payment_intent" do
